@@ -1,0 +1,86 @@
+.teacher-picker {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+
+	padding-left: 10px;
+	padding-right: 10px;
+
+	.item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+
+		border-radius: 12px;
+		padding: 15px;
+
+		border-style: solid;
+		border-width: 1px;
+		border-color: #eaede8 !important;
+	}
+
+	.item:hover {
+		border-color: #b3d0ad !important;
+	}
+	.avatar {
+		width: 150px;
+		height: 150px;
+		margin-bottom: 20px;
+	}
+}
+
+.details-teacher {
+	.info {
+		display: flex;
+		flex-direction: column !important;
+		align-items: center !important;
+
+		.avatar {
+			width: 170px;
+			height: 170px;
+		}
+		.name {
+			font-size: 22px;
+			font-weight: bold;
+			text-align: center;
+		}
+		.item {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+		}
+	}
+
+	.introduce {
+		.title {
+			font-size: 18px;
+		}
+		hr {
+			background-color: #e6e6e6;
+		}
+		p {
+			font-size: 14px;
+		}
+		iframe {
+			width: 100%;
+		}
+	}
+}
+
+.wrap-teacher-picker {
+	.extra {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+
+		.search {
+			width: 400px;
+			@include max-media(600px) {
+				flex: 1;
+			}
+		}
+	}
+}

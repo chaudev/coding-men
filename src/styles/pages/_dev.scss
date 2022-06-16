@@ -1,0 +1,68 @@
+.dev__screen {
+	background: url(../../../public/images/bg-dev.jpg) no-repeat center center;
+	background-size: cover;
+	height: 100vh;
+	width: 100vw;
+	&-content {
+		width: 450px;
+		background: rgba(255, 255, 255, 0.25);
+		box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		border-radius: 10px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 30px;
+
+		@include max-media(500px) {
+			width: 90vw;
+		}
+	}
+}
+
+.dev__main {
+	background: url(../../../public/images/bg-dev.jpg) no-repeat center center;
+	background-size: cover;
+	height: 100vh;
+	width: 100vw;
+	&-screen {
+		height: 90vh;
+		width: 1000px;
+		background: rgba(255, 255, 255, 0.25);
+		box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		border-radius: 10px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		text-overflow: hidden;
+	}
+	&-redirect {
+		height: 60px;
+		.ant-form-item {
+			margin: 0 !important;
+		}
+	}
+}
+
+.term__service {
+	overflow: auto;
+	height: 70vh;
+	&::-webkit-scrollbar-track {
+		border-radius: 10px;
+		background-color: white;
+	}
+
+	&::-webkit-scrollbar {
+		border: none;
+		width: 4px;
+		background-color: #f5f5f5;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		background-color: rgb(153, 212, 241);
+	}
+}

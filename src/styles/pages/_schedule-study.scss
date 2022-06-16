@@ -1,0 +1,37 @@
+.schedule-study-list {
+	.ant-list-item {
+		padding-top: 16px;
+		padding-bottom: 0;
+	}
+	.ant-list-item-meta {
+		margin-bottom: 0;
+	}
+}
+.schedule-study-list-child {
+	.ant-col {
+		height: 100%;
+	}
+}
+.schedule-study-list-child-item {
+	height: calc(100% - 16px);
+	.content-body {
+		color: #000;
+		> div {
+			padding-bottom: 5px;
+			~ div {
+				padding-top: 5px;
+				border-top: 1px solid #f0f0f0;
+			}
+			p {
+				margin-bottom: 0;
+				font-weight: 500;
+			}
+			span {
+				font-weight: normal;
+			}
+		}
+	}
+	.ant-card {
+		height: 100%;
+	}
+}

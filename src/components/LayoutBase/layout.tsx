@@ -1,0 +1,289 @@
+import { Breadcrumb, Popover, Tooltip } from 'antd'
+import { signIn } from 'next-auth/client'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import TitlePageHeader from '~/components/Elements/TitlePageHeader'
+import Header from '~/components/Header'
+import Menu from '~/components/Menu'
+import { useWrap } from '~/context/wrap'
+import { AcademicChildMenu } from '~/lib/data-menu/AcademinMenu'
+import { AccountantChildMenu } from '~/lib/data-menu/AccountantMenu'
+import { AdminChildMenu } from '~/lib/data-menu/AdminMenu'
+import { ParentsChildMenu } from '~/lib/data-menu/ParentsMenu'
+import { ProfessionalManagerChildMenu } from '~/lib/data-menu/ProfessionalManagerMenu'
+import { SellerChildMenu } from '~/lib/data-menu/SellerMenu'
+import { StaffManagerChildMenu } from '~/lib/data-menu/StaffManagerMenu'
+import { StudentChildMenu } from '~/lib/data-menu/StudentMenu'
+import { TeacherChildMenu } from '~/lib/data-menu/TeacherMenu'
+
+function Layout({ children, home }: { children: React.ReactNode; home?: boolean }) {
+	const { userInformation } = useWrap()
+	const [mainMenu, setMainMenu] = useState(null)
+
+	// Get path and slug
+	const router = useRouter()
+	let path: string = router.pathname
+	let pathString: string[] = path.split('/')
+
+	pathString = pathString.filter((item: any) => {
+		return item == '' || item == '[slug]' ? false : true
+	})
+
+	const [isOpen, setIsOpen] = useState(true)
+
+	const [openMenuMobile, setOpenMenuMobile] = useState(false)
+	const { titlePage } = useWrap()
+	const funcMenuMobile = () => {
+		!openMenuMobile ? setOpenMenuMobile(true) : setOpenMenuMobile(false)
+	}
+
+	const resetMenuMobile = () => {
+		setOpenMenuMobile(false)
+	}
+
+	const isOpenMenu = () => {
+		isOpen ? setIsOpen(false) : setIsOpen(true)
+	}
+
+	// Lấy rotuer đế gán vào route của Link
+	const returnRouter = (index: number) => {
+		let router = ''
+
+		if (index > 0) {
+			pathString.forEach((item, ind) => {
+				if (ind <= index) {
+					router = router + '/' + item
+				} else {
+					return false
+				}
+			})
+		} else {
+			router = '/' + pathString[0]
+		}
+
+		let nameRouter = null
+		mainMenu?.forEach((item, value) => {
+			if (nameRouter == null) {
+				item.MenuItem.forEach((element: any) => {
+					if (nameRouter == null) {
+						if (element.ItemType == 'sub-menu') {
+							element.SubMenuList.forEach((menu, ind) => {
+								if (router === menu.Key) {
+									nameRouter = menu.Route
+									return false
+								}
+							})
+						} else {
+							if (router === element.Key) {
+								nameRouter = element.Route
+								return false
+							}
+						}
+					} else {
+						return false
+					}
+				})
+			} else {
+				return false
+			}
+		})
+
+		return nameRouter
+	}
+
+	// Lấy router để bóc tách so sánh => trả về nameRouter
+	const returnGetRouter = (index: number) => {
+		let router = ''
+		if (index > 0) {
+			pathString.forEach((item, ind) => {
+				if (ind <= index) {
+					router = router + '/' + item
+				} else {
+					return false
+				}
+			})
+		} else {
+			router = '/' + pathString[0]
+		}
+		return router
+	}
+
+	// Tìm nameRouter với trường hợp breadcum chỉ có 1
+	const findNameRouterOnly = (getRouter: string) => {
+		let nameRouter = ''
+		mainMenu?.forEach((item: any, index: any) => {
+			if (item.MenuKey === getRouter) {
+				nameRouter = item.MenuTitle
+				return false
+			}
+		})
+		return nameRouter
+	}
+
+	// Tìm nameRouter với trường hợp breadcum > 1
+	const findNameRouterMany = (getRouter: string) => {
+		let nameRouter = ''
+		mainMenu?.forEach((item: any, value: any) => {
+			if (nameRouter == '') {
+				item.MenuItem.forEach((element: any) => {
+					if (nameRouter == '') {
+						if (element.ItemType == 'sub-menu') {
+							element.SubMenuList.forEach((menu, ind) => {
+								if (getRouter === menu.Key) {
+									nameRouter = menu.Text
+									return false
+								}
+							})
+						} else {
+							if (getRouter === element.Key) {
+								nameRouter = element.Text
+								return false
+							}
+						}
+					} else {
+						return false
+					}
+				})
+			} else {
+				return false
+			}
+		})
+		if (nameRouter === '') {
+			if (getRouter.search('detail') > 0) {
+				nameRouter = 'Chi tiết'
+				if (getRouter.includes('course-list-detail')) {
+					nameRouter = 'Tên khóa học'
+				}
+			} else {
+				nameRouter = ''
+			}
+		}
+		return nameRouter
+	}
+
+	// Trả về text
+	const returnText = (index: number) => {
+		let nameRouter = ''
+		let getRouter = returnGetRouter(index)
+		if (index < 1) {
+			nameRouter = findNameRouterOnly(getRouter) // Tìm tên router trường hợp key chỉ có 1 từ
+		} else {
+			nameRouter = findNameRouterMany(getRouter) // Tìm tên router trường hợp key > 1 từ
+		}
+		return nameRouter
+	}
+
+	const contentFanpage = (
+		<div>
+			<iframe
+				src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fthietkewebsitemonamedia&tabs=timeline%2C%20messages&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=444447504039960"
+				width="500"
+				height="500"
+				style={{ maxWidth: '100%', border: 'bone', overflow: 'hidden' }}
+				scrolling="no"
+				frameBorder="0"
+				allowFullScreen
+				allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+			></iframe>
+		</div>
+	)
+
+	useEffect(() => {
+		if (userInformation) {
+			switch (userInformation?.RoleID) {
+				case 1:
+					setMainMenu(AdminChildMenu)
+					break
+				case 2:
+					setMainMenu(TeacherChildMenu)
+					break
+				case 3:
+					setMainMenu(StudentChildMenu)
+					break
+				case 4:
+					setMainMenu(ParentsChildMenu)
+					break
+				case 5:
+					setMainMenu(StaffManagerChildMenu)
+					break
+				case 6:
+					setMainMenu(SellerChildMenu)
+					break
+				case 7:
+					setMainMenu(AcademicChildMenu)
+					break
+				case 8:
+					setMainMenu(ProfessionalManagerChildMenu)
+					break
+				case 9:
+					setMainMenu(AccountantChildMenu)
+					break
+				default:
+					break
+			}
+		}
+	}, [userInformation])
+
+	return (
+		<div className="app">
+			<Header isOpenMenu={isOpenMenu} isOpen={isOpen} funcMenuMobile={funcMenuMobile} openMenuMobile={openMenuMobile} />
+			<Menu
+				resetMenuMobile={resetMenuMobile}
+				isOpenMenu={isOpenMenu}
+				isOpen={isOpen}
+				openMenuMobile={openMenuMobile}
+				funcMenuMobile={funcMenuMobile}
+			/>
+			<main className="app-main">
+				{/* Redirect to registor course */}
+				{/* {(userInformation?.RoleID === 1 ||
+					userInformation?.RoleID === 2 ||
+					userInformation?.RoleID === 5 ||
+					userInformation?.RoleID === 6) && <RegCourseBtn />} */}
+
+				{/* KIỂM TRA LỚP SẮP DIỄN RA DÀNH CHO HỌC VIÊN*/}
+				{/* {userInformation?.RoleID === 3 && <InComingClassBtn />} */}
+
+				{userInformation?.RoleID === 3 && (
+					<Link href="/feedback">
+						<Tooltip title="Phản hồi" placement="left">
+							<div className="icon-feedback">
+								<img className="facebook-img" src="/icons/feedback.png"></img>
+							</div>
+						</Tooltip>
+					</Link>
+				)}
+
+				<div className={`app-content ${!isOpen && 'close-app'}`}>
+					<div className="wrap-breadcrumb">
+						{mainMenu && mainMenu.length > 0 && (
+							<Breadcrumb>
+								{pathString?.map(
+									(item, index) =>
+										returnText(index) !== '' && (
+											<Breadcrumb.Item key={index}>
+												{returnRouter(index) !== null ? (
+													<Link href={returnRouter(index)}>
+														<a>{returnText(index)}</a>
+													</Link>
+												) : (
+													<span>{returnText(index)}</span>
+												)}
+											</Breadcrumb.Item>
+										)
+								)}
+							</Breadcrumb>
+						)}
+					</div>
+					<div className="app-content-title">
+						<TitlePageHeader title={titlePage} />
+					</div>
+					<div className="container-fluid">{children}</div>
+				</div>
+			</main>
+		</div>
+	)
+}
+
+export default Layout
